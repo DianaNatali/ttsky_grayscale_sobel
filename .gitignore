@@ -7,7 +7,6 @@ src/user_config.json
 src/config_merged.json
 test/sim_build
 test/__pycache__/
-test/results.xml
 test/gate_level_netlist.v
 **/env/
 **/dist/
@@ -19,7 +18,6 @@ __pycache__
 output_image.txt
 *.vvp
 *.vcd
-*.xml
 output_image.jpg
 output_image.jpg
 input_pixels.txt
