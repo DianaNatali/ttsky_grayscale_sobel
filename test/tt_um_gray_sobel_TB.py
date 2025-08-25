@@ -73,7 +73,7 @@ def gray_convertion(data):
 
 
 #-------------------------------Convert RGB image to grayscale------------------------------------------
-img_original = cv2.imread('../test_images/monarch_RGB.jpg', cv2.IMREAD_COLOR) 
+img_original = cv2.imread('test_images/monarch_RGB.jpg', cv2.IMREAD_COLOR) 
 img_original = cv2.cvtColor(img_original, cv2.COLOR_BGR2RGB)
 
 array_input_image = []
@@ -207,8 +207,8 @@ async def tt_um_gray_sobel_gray(dut):
     # Clock cycle
     cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
 
-    dut.VGND.value = 0
-    dut.VPWR.value = 1
+    # dut.VGND.value = 0
+    # dut.VPWR.value = 1
     # Inital
     dut.ena.value = 0
     dut.ui_in.value = 0
@@ -253,8 +253,8 @@ async def tt_um_gray_sobel_sobel(dut):
     # Clock cycle
     cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
 
-    dut.VGND.value = 0
-    dut.VPWR.value = 1
+    # dut.VGND.value = 0
+    # dut.VPWR.value = 1
     # Inital
     dut.ena.value = 0
     dut.ui_in.value = 0
@@ -312,8 +312,8 @@ async def tt_um_gray_sobel_gray_sobel(dut):
     # Clock cycle
     cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
 
-    dut.VGND.value = 0
-    dut.VPWR.value = 1
+    # dut.VGND.value = 0
+    # dut.VPWR.value = 1
     # Inital
     dut.ena.value = 0
     dut.ui_in.value = 0
