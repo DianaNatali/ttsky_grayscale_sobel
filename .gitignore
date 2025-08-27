@@ -18,6 +18,7 @@ __pycache__
 output_image.txt
 *.vvp
 *.vcd
+*.xml
 output_image.jpg
 output_image.jpg
 input_pixels.txt
