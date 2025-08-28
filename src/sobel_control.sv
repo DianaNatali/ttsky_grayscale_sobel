@@ -24,7 +24,7 @@ module sobel_control (
     logic [MAX_RESOLUTION_BITS-1:0] counter_pixels;
     logic px_ready;
     
-    logic signed [PIXEL_WIDTH_OUT-1:0] sobel_pixels[0:2][0:2]; 
+    logic signed [PIXEL_WIDTH_OUT-1:0] sobel_pixels[0:8]; 
 
     logic [PIXEL_WIDTH_OUT-1:0] out_sobel_core;
     logic [PIXEL_WIDTH_OUT-1:0] out_sobel;
@@ -91,15 +91,15 @@ module sobel_control (
                     px_ready <= 'b0;
                     if (px_rdy_i) begin
                         case(counter_sobel)
-                            0: sobel_pixels[0][0] <= in_px_sobel_i;
-                            1: sobel_pixels[0][1] <= in_px_sobel_i;
-                            2: sobel_pixels[0][2] <= in_px_sobel_i;
-                            3: sobel_pixels[1][0] <= in_px_sobel_i;
-                            4: sobel_pixels[1][1] <= in_px_sobel_i;
-                            5: sobel_pixels[1][2] <= in_px_sobel_i;
-                            6: sobel_pixels[2][0] <= in_px_sobel_i;
-                            7: sobel_pixels[2][1] <= in_px_sobel_i;
-                            8: sobel_pixels[2][2] <= in_px_sobel_i;
+                            0: sobel_pixels[0] <= in_px_sobel_i;
+                            1: sobel_pixels[1] <= in_px_sobel_i;
+                            2: sobel_pixels[2] <= in_px_sobel_i;
+                            3: sobel_pixels[3] <= in_px_sobel_i;
+                            4: sobel_pixels[4] <= in_px_sobel_i;
+                            5: sobel_pixels[5] <= in_px_sobel_i;
+                            6: sobel_pixels[6] <= in_px_sobel_i;
+                            7: sobel_pixels[7] <= in_px_sobel_i;
+                            8: sobel_pixels[8] <= in_px_sobel_i;
                         endcase
                         counter_sobel <= counter_sobel + 1;
                         if (counter_sobel == 8) begin
@@ -114,18 +114,18 @@ module sobel_control (
                     if (px_rdy_i) begin
                         case(counter_sobel)
                             0: begin 
-                                sobel_pixels[0][0] <= sobel_pixels[1][0];
-                                sobel_pixels[0][1] <= sobel_pixels[1][1];
-                                sobel_pixels[0][2] <= sobel_pixels[1][2];
+                                sobel_pixels[0] <= sobel_pixels[3];
+                                sobel_pixels[1] <= sobel_pixels[4];
+                                sobel_pixels[2] <= sobel_pixels[5];
                                 
-                                sobel_pixels[1][0] <= sobel_pixels[2][0];
-                                sobel_pixels[1][1] <= sobel_pixels[2][1];
-                                sobel_pixels[1][2] <= sobel_pixels[2][2];
+                                sobel_pixels[3] <= sobel_pixels[6];
+                                sobel_pixels[4] <= sobel_pixels[7];
+                                sobel_pixels[5] <= sobel_pixels[8];
 
-                                sobel_pixels[2][0] <= in_px_sobel_i;
+                                sobel_pixels[6] <= in_px_sobel_i;
                             end
-                            1: sobel_pixels[2][1] <= in_px_sobel_i;
-                            2: sobel_pixels[2][2] <= in_px_sobel_i;
+                            1: sobel_pixels[7] <= in_px_sobel_i;
+                            2: sobel_pixels[8] <= in_px_sobel_i;
                         endcase
                         counter_sobel <= counter_sobel + 1;
                         if (counter_sobel == 2) begin
