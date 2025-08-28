@@ -16,14 +16,14 @@ module tt_um_gray_sobel (
   
   );
 
+    
+    logic nreset_async_i;
+    logic [7:0] uo_out_q;
+
+    assign nreset_async_i = rst_n;
+
     assign uio_oe = 8'b00000000; 
     assign uio_out = '0;
-    assign uo_out[7:3] = output_px[4:0];
-    assign uo_out[7:5] = output_px[2:0];
-    assign uo_out[4:3] = select_process_i;
-
-    logic nreset_async_i;
-    assign nreset_async_i = rst_n;
 
     //SPI interface
     logic spi_sck_i;
@@ -33,7 +33,6 @@ module tt_um_gray_sobel (
     assign spi_sck_i = ui_in[0];
     assign spi_cs_i = ui_in[1];
     assign spi_sdi_i = ui_in[2];
-    assign uo_out[0] = spi_sdo_o;
 
   //Core Control
     logic [1:0] select_process_i;
@@ -49,8 +48,6 @@ module tt_um_gray_sobel (
     assign LFSR_enable_i = uio_in[0];
     assign seed_stop_i = uio_in[1];
     assign lfsr_en_i = uio_in[2];
-    assign uo_out[1] = lfsr_done;
-    assign uo_out[2] = ena;
 
     logic nreset_i; 
     
@@ -148,5 +145,20 @@ module tt_um_gray_sobel (
       .lfsr_rdy_o(out_lfsr_rdy),
       .lfsr_done(lfsr_done)
     );
+
+
+    always_ff @(posedge clk or negedge nreset_i) begin
+      if (!nreset_i) begin
+        uo_out_q <= '0;
+      end else begin
+        uo_out_q[7:5] <= output_px[7:5];
+        uo_out_q[4:3] <= select_process_i;
+        uo_out_q[2]   <= ena;
+        uo_out_q[1]   <= lfsr_done;
+        uo_out_q[0]   <= spi_sdo_o;
+      end
+    end
+
+    assign uo_out = uo_out_q;
 
 endmodule
