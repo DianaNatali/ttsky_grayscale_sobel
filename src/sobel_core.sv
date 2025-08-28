@@ -6,7 +6,15 @@
 
 
 module sobel_core (
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i [0:8],
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i0,
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i1,
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i2,
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i3,
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i4,
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i5,
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i6,
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i7,
+    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i8,
     output logic [PIXEL_WIDTH_OUT-1:0] out_sobel_core_o                           
 );
 
@@ -14,8 +22,19 @@ logic signed [MAX_GRADIENT_WIDTH:0] x_grad;      //No substraction of 1 because 
 logic signed [MAX_GRADIENT_WIDTH:0] y_grad;                                    
 logic signed [MAX_GRADIENT_WIDTH:0] abs_x_grad;
 logic signed [MAX_GRADIENT_WIDTH:0] abs_y_grad;                
-logic [MAX_GRADIENT_SUM_WIDTH:0] sum_xy_grad;                                    
+logic [MAX_GRADIENT_SUM_WIDTH:0] sum_xy_grad;
 
+logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i [0:8];
+
+assign matrix_pixels_i[0] = matrix_pixels_i0;
+assign matrix_pixels_i[1] = matrix_pixels_i1;
+assign matrix_pixels_i[2] = matrix_pixels_i2;
+assign matrix_pixels_i[3] = matrix_pixels_i3;
+assign matrix_pixels_i[4] = matrix_pixels_i4;
+assign matrix_pixels_i[5] = matrix_pixels_i5;
+assign matrix_pixels_i[6] = matrix_pixels_i6;
+assign matrix_pixels_i[7] = matrix_pixels_i7;
+assign matrix_pixels_i[8] = matrix_pixels_i8;
 
 //Equivalent to convolve 3x3 pixel matrix with sobel 3x3 X kernel
 assign x_grad = ( ( matrix_pixels_i[2] - matrix_pixels_i[0] ) +
