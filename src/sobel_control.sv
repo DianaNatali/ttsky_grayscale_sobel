@@ -77,16 +77,14 @@ module sobel_control (
         endcase
     end
 
-    integer i, j;
+    integer i;
     always_ff @(posedge clk_i or negedge nreset_i)begin
         if (!nreset_i)begin
             counter_sobel <= 'b0;
             counter_pixels <= 'b0;
             px_ready <= 'b0;
-            for (i = 0; i < 3; i = i + 1) begin
-                for (j = 0; j < 3; j = j + 1) begin
-                    sobel_pixels[i][j] <= '0;
-                end
+            for (i = 0; i < 9; i = i + 1) begin
+                sobel_pixels[i] <= 'b0;
             end
         end else begin
             case (next)
