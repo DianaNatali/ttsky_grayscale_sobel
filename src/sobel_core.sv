@@ -20,11 +20,11 @@ module sobel_core (
 
 logic signed [MAX_GRADIENT_WIDTH:0] x_grad;      //No substraction of 1 because gradient is signed, so size is MAX_GRADIENT_WIDTH + 1
 logic signed [MAX_GRADIENT_WIDTH:0] y_grad;                                    
-logic signed [MAX_GRADIENT_WIDTH:0] abs_x_grad;
-logic signed [MAX_GRADIENT_WIDTH:0] abs_y_grad;                
+logic [MAX_GRADIENT_WIDTH:0] abs_x_grad;
+logic [MAX_GRADIENT_WIDTH:0] abs_y_grad;                
 logic [MAX_GRADIENT_SUM_WIDTH:0] sum_xy_grad;
 
-logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i [0:8];
+logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i [0:8];
 
 assign matrix_pixels_i[0] = matrix_pixels_i0;
 assign matrix_pixels_i[1] = matrix_pixels_i1;
@@ -42,7 +42,7 @@ assign x_grad = ( ( matrix_pixels_i[2] - matrix_pixels_i[0] ) +
                   ( matrix_pixels_i[8] - matrix_pixels_i[6] ) );
 //Equivalent to convolve 3x3 pixel matrix with sobel 3x3 Y kernel    
 
-assign y_grad = ( ( matrix_pixels_i[6] - matrix_pixels_i[0] ) +
+assign y_grad = (( matrix_pixels_i[6] - matrix_pixels_i[0] ) +
                   (( matrix_pixels_i[7] - matrix_pixels_i[1] ) << 1) +
                    ( matrix_pixels_i[8] - matrix_pixels_i[2] ) );
 
