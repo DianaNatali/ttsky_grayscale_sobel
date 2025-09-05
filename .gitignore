@@ -23,3 +23,8 @@ output_image.jpg
 output_image.jpg
 input_pixels.txt
 .vscode
+src/config.tcl
+src/project.sdc
+src/user_config.tcl
+*apr*
+*pdk_verilog*

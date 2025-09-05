@@ -6,15 +6,15 @@
 
 
 module sobel_core (
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i0,
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i1,
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i2,
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i3,
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i4,
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i5,
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i6,
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i7,
-    input  logic signed [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i8,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i0,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i1,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i2,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i3,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i4,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i5,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i6,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i7,
+    input  logic [PIXEL_WIDTH_OUT-1:0] matrix_pixels_i8,
     output logic [PIXEL_WIDTH_OUT-1:0] out_sobel_core_o                           
 );
 

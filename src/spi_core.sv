@@ -4,7 +4,7 @@
   `include "parameters.svh"
 `endif
 module spi_core #(
-    parameter WORD_SIZE = "mandatory"
+    parameter WORD_SIZE = MAX_PIXEL_BITS
 )(
     input logic sck_i
     ,input logic sdi_i

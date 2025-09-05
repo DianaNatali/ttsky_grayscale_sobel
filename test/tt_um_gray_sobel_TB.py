@@ -207,8 +207,8 @@ async def tt_um_gray_sobel_gray(dut):
     # Clock cycle
     cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
 
-    # dut.VGND.value = 0
-    # dut.VPWR.value = 1
+    dut.VGND.value = 0
+    dut.VPWR.value = 1
     # Inital
     dut.ena.value = 0
     dut.ui_in.value = 0
@@ -253,8 +253,8 @@ async def tt_um_gray_sobel_sobel(dut):
     # Clock cycle
     cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
 
-    # dut.VGND.value = 0
-    # dut.VPWR.value = 1
+    dut.VGND.value = 0
+    dut.VPWR.value = 1
     # Inital
     dut.ena.value = 0
     dut.ui_in.value = 0
@@ -312,8 +312,8 @@ async def tt_um_gray_sobel_gray_sobel(dut):
     # Clock cycle
     cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
 
-    # dut.VGND.value = 0
-    # dut.VPWR.value = 1
+    dut.VGND.value = 0
+    dut.VPWR.value = 1
     # Inital
     dut.ena.value = 0
     dut.ui_in.value = 0
