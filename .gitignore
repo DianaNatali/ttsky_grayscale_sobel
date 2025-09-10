@@ -26,5 +26,5 @@ input_pixels.txt
 src/config.tcl
 src/project.sdc
 src/user_config.tcl
-*apr*
-*pdk_verilog*
+src/apr/
+src/pdk_verilog/
