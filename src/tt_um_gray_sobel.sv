@@ -151,7 +151,7 @@ module tt_um_gray_sobel (
       if (!nreset_i) begin
         uo_out_q <= 8'b00000000;
       end else begin
-        uo_out_q[7:5] <= output_px[MAX_PIXEL_BITS-1:MAX_PIXEL_BITS-3];
+        uo_out_q[7:5] <= output_px[7:5];
         uo_out_q[1:0] <= select_process_i;
         uo_out_q[2]   <= ena;
         uo_out_q[3]   <= spi_sdo_o;
