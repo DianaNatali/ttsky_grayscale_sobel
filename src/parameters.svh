@@ -10,17 +10,4 @@ localparam MAX_GRADIENT_SUM_WIDTH = 11;
 localparam MAX_RESOLUTION_BITS = 24;
 localparam ZERO_PAD_WIDTH = MAX_PIXEL_BITS - PIXEL_WIDTH_OUT;
 
-    // typedef struct packed {
-    //     logic signed [PIXEL_WIDTH_OUT-1:0] pix0;
-    //     logic signed [PIXEL_WIDTH_OUT-1:0] pix1;
-    //     logic signed [PIXEL_WIDTH_OUT-1:0] pix2;
-    // } sobel_vector;
-    
-
-    // typedef struct packed {
-    //     sobel_vector vector0;
-    //     sobel_vector vector1;
-    //     sobel_vector vector2;
-    //} sobel_matrix;
-
 `endif

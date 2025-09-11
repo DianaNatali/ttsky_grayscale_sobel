@@ -9,12 +9,14 @@ from cocotb.triggers import Timer
 from matplotlib import pyplot as plt
 
 ## Inputs
-## spi_sck_i = ui_in[0]
-## spi_cs_i = ui_in[1]
+## spi_cs_i = ui_in[0]
+## spi_sck_i = ui_in[1]
 ## spi_sdi_i = ui_in[2]
 ## select_i = ui_in[4:3]
 ## start_sobel_i = ui_in[5];
-## select_input = ui_in[6];
+## LFSR_enable_i = uio_in[0];
+## seed_stop_i = uio_in[1];
+## assign lfsr_en_i = uio_in[2];
 
 ## Outputs
 ## uo_out[3] = spi_sdo_o;
@@ -121,18 +123,18 @@ async def spi_transfer_pi(data, dut):
     data_rx_rpi = 0
     await Timer(3)
 
-    dut.ui_in[0].value = 1
-    dut.ui_in[1].value = 0
+    dut.ui_in[0].value = 0
+    dut.ui_in[1].value = 1
     dut.ui_in[2].value = 0
     data_tx_rpi = swap_bytes(data)
 
     for i in range(STREAM_DATA_WIDTH):
-        dut.ui_in[0].value = 0
+        dut.ui_in[1].value = 0
         dut.ui_in[2].value = (data_tx_rpi >> (STREAM_DATA_WIDTH - 1 - i)) & 0x01
         await Timer(RPI_SPI_CLK)
-        read_bit = int(dut.uo_out[0].value) 
+        read_bit = int(dut.uo_out[3].value) 
         data_rx_rpi = int(read_bit << (STREAM_DATA_WIDTH - 1 - i)) + data_rx_rpi 
-        dut.ui_in[0].value = 1
+        dut.ui_in[1].value = 1
         await Timer(RPI_SPI_CLK)
    
     for _ in range(6):
@@ -217,8 +219,8 @@ async def tt_um_gray_sobel_gray(dut):
     dut.ui_in[3].value = 0
     dut.ui_in[4].value = 1
 
-    dut.ui_in[1].value = 1
     dut.ui_in[0].value = 1
+    dut.ui_in[1].value = 1
     
     # NOT LFSR
     dut.uio_in[0].value = 0
@@ -232,7 +234,7 @@ async def tt_um_gray_sobel_gray(dut):
 
     await FallingEdge(dut.clk)
     await Timer(20)
-    dut.ui_in[1].value = 0
+    dut.ui_in[0].value = 0
     await Timer(20)
     for i, data in enumerate(random_numbers_array):
         read_data = await spi_transfer_pi(int(data), dut)
@@ -242,9 +244,9 @@ async def tt_um_gray_sobel_gray(dut):
             assert read_data == gray_convertion(random_numbers_array[i-1])
     
     await Timer(20)
-    dut.ui_in[1].value = 1
+    dut.ui_in[0].value = 1
     await Timer(20)
-    dut.ui_in[1].value = 1
+    dut.ui_in[0].value = 1
 
 
 #Sobel Test For SPI Data!
@@ -263,8 +265,8 @@ async def tt_um_gray_sobel_sobel(dut):
     dut.ui_in[3].value = 1
     dut.ui_in[4].value = 0
     
-    dut.ui_in[1].value = 1
     dut.ui_in[0].value = 1
+    dut.ui_in[1].value = 1
     
     dut.ui_in[5].value = 1
     
@@ -279,7 +281,7 @@ async def tt_um_gray_sobel_sobel(dut):
 
     await FallingEdge(dut.clk)
     await Timer(20)
-    dut.ui_in[1].value = 0
+    dut.ui_in[0].value = 0
     await Timer(20)
     # for i, data in enumerate(pixel_gray_array[:12]):
     #     read_data = await spi_transfer_pi(int(data), dut)
@@ -302,9 +304,9 @@ async def tt_um_gray_sobel_sobel(dut):
 
 
     await Timer(20)
-    dut.ui_in[1].value = 1
+    dut.ui_in[0].value = 1
     await Timer(20)
-    dut.ui_in[1].value = 1
+    dut.ui_in[0].value = 1
 
 #Sobel Test For SPI Data!
 @cocotb.test()
@@ -322,8 +324,8 @@ async def tt_um_gray_sobel_gray_sobel(dut):
     dut.ui_in[3].value = 0
     dut.ui_in[4].value = 0
     
-    dut.ui_in[1].value = 1
     dut.ui_in[0].value = 1
+    dut.ui_in[1].value = 1
     
     dut.ui_in[5].value = 1
     
@@ -346,7 +348,7 @@ async def tt_um_gray_sobel_gray_sobel(dut):
 
     await FallingEdge(dut.clk)
     await Timer(20)
-    dut.ui_in[1].value = 0
+    dut.ui_in[0].value = 0
     await Timer(20)
     # for i, data in enumerate(pixel_rgb_array):
     #     dut._log.info(f"Acá1\n")
@@ -367,9 +369,9 @@ async def tt_um_gray_sobel_gray_sobel(dut):
             dut._log.info(f"Resultado convolución {((i - 9) // 3) + 1}: {received_bytes}")
 
     await Timer(20)
-    dut.ui_in[1].value = 1
+    dut.ui_in[0].value = 1
     await Timer(20)
-    dut.ui_in[1].value = 1
+    dut.ui_in[0].value = 1
 
 
 

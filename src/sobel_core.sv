@@ -37,14 +37,22 @@ assign matrix_pixels_i[7] = matrix_pixels_i7;
 assign matrix_pixels_i[8] = matrix_pixels_i8;
 
 //Equivalent to convolve 3x3 pixel matrix with sobel 3x3 X kernel
-assign x_grad = ( ( matrix_pixels_i[2] - matrix_pixels_i[0] ) +
-                 (( matrix_pixels_i[5] - matrix_pixels_i[3] ) << 1) +
-                  ( matrix_pixels_i[8] - matrix_pixels_i[6] ) );
+assign x_grad = ( $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[2]}) -
+                  $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[0]}) ) +
+                ( ( $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[5]}) -
+                    $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[3]}) ) <<< 1 ) +
+                ( $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[8]}) -
+                  $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[6]}) );
+
 //Equivalent to convolve 3x3 pixel matrix with sobel 3x3 Y kernel    
 
-assign y_grad = (( matrix_pixels_i[6] - matrix_pixels_i[0] ) +
-                  (( matrix_pixels_i[7] - matrix_pixels_i[1] ) << 1) +
-                   ( matrix_pixels_i[8] - matrix_pixels_i[2] ) );
+assign y_grad = ( $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[6]}) -
+                  $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[0]}) ) +
+                ( ( $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[7]}) -
+                    $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[1]}) ) <<< 1 ) +
+                ( $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[8]}) -
+                  $signed({{(MAX_GRADIENT_WIDTH-PIXEL_WIDTH_OUT+1){1'b0}}, matrix_pixels_i[2]}) );
+
 
 //Equivalent aprox to calculate magnitud of x,y gradient
 assign abs_x_grad = (x_grad[MAX_GRADIENT_WIDTH]? ~x_grad+1 : x_grad);  //Absolute value    
