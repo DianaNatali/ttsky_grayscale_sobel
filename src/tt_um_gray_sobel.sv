@@ -22,7 +22,6 @@ module tt_um_gray_sobel (
 
     assign nreset_async_i = rst_n;
     assign uio_oe  = 8'b11111000;          // bits [7:3] salidas, bits [2:0] entradas
-    assign uio_out[7:3] = output_px[4:0];
     assign uio_out[2:0] = 3'b000;
 
     //SPI interface
@@ -151,7 +150,6 @@ module tt_um_gray_sobel (
       if (!nreset_i) begin
         uo_out_q <= 8'b00000000;
       end else begin
-        uo_out_q[7:5] <= output_px[7:5];
         uo_out_q[1:0] <= select_process_i;
         uo_out_q[2]   <= ena;
         uo_out_q[3]   <= spi_sdo_o;

@@ -45,8 +45,6 @@ module LFSR(
     
     logic r_xnor;
     logic stop_done;
-
-    wire [MAX_PIXEL_BITS-2:0] lfsr_shift = lfsr_out[MAX_PIXEL_BITS-2:0];
     
     always_ff @(posedge clk_i or negedge nreset_i) begin
         if(!nreset_i) begin
@@ -54,7 +52,7 @@ module LFSR(
             lfsr_rdy_o <= '0;
         end else begin
             if (lfsr_en_i & ~stop_done) begin
-                lfsr_out <= {lfsr_shift, r_xnor};
+              lfsr_out <= {lfsr_out[MAX_PIXEL_BITS-2:0], r_xnor};
                 lfsr_rdy_o <= 1'b1;
            end else if(stop_done) begin
                 lfsr_out <= lfsr_out;
