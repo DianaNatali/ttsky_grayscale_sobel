@@ -21,8 +21,8 @@ module tt_um_gray_sobel (
     logic [7:0] uo_out_q;
 
     assign nreset_async_i = rst_n;
-    assign uio_oe  = 8'b11111000;          // bits [7:3] salidas, bits [2:0] entradas
-    assign uio_out[2:0] = 3'b000;
+    assign uio_oe  = 8'b11110000;          // bits [7:4] output, bits [3:0] input
+    assign uio_out[3:0] = 4'b0000;
 
     //SPI interface
     logic spi_sck_i;
@@ -44,9 +44,16 @@ module tt_um_gray_sobel (
     logic seed_stop_i;
     logic lfsr_en_i;
     logic lfsr_done;
+    logic LFSR_sel_debug;
     assign LFSR_enable_i = uio_in[0];
     assign seed_stop_i = uio_in[1];
     assign lfsr_en_i = uio_in[2];
+    assign LFSR_sel_debug = uio_in[3];
+
+  //SA Control
+    logic sa_done;
+    assign uio_out[4] = sa_done;
+    
 
     logic nreset_i; 
     
@@ -88,8 +95,10 @@ module tt_um_gray_sobel (
     logic [MAX_PIXEL_BITS-1:0] output_px;
     logic [MAX_PIXEL_BITS-1:0] input_lfsr_data;  
     logic [MAX_PIXEL_BITS-1:0] output_lfsr_data;  
-    logic [MAX_PIXEL_BITS-1:0] lfsr_out_px;  
+    logic [MAX_PIXEL_BITS-1:0] lfsr_out_data;
     
+    logic [MAX_PIXEL_BITS-1:0] sa_signature;
+        
     logic in_data_rdy;
     logic out_data_rdy;
     logic in_px_rdy;
@@ -99,13 +108,15 @@ module tt_um_gray_sobel (
     logic out_config_rdy;
 
     assign input_lfsr_data = LFSR_enable_i_sync ? input_data : 0;      
-    assign input_pixel = LFSR_enable_i_sync ? lfsr_out_px : input_data;
+    assign input_pixel = LFSR_enable_i_sync ? lfsr_out_data : input_data;
 
     assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy : 0;      
     assign in_px_rdy = LFSR_enable_i_sync ? out_lfsr_rdy : in_data_rdy;
 
-    assign output_data = LFSR_enable_i_sync ? output_lfsr_data : output_px;
-    assign out_data_rdy = LFSR_enable_i_sync ? out_config_rdy : out_px_rdy;
+    assign output_data = LFSR_enable_i_sync ?
+                         (LFSR_sel_debug ? output_lfsr_data : sa_signature) : output_px;
+    assign out_data_rdy = LFSR_enable_i_sync ? 
+                         (LFSR_sel_debug ? out_config_rdy: out_px_rdy) : out_px_rdy;
 
     spi_control spi0 (
       .clk_i(clk),
@@ -140,9 +151,20 @@ module tt_um_gray_sobel (
       .config_data_o(output_lfsr_data),
       .config_done_o(out_config_rdy),
       .lfsr_en_i(lfsr_en_i_sync),
-      .lfsr_out(lfsr_out_px),
+      .lfsr_out(lfsr_out_data),
       .lfsr_rdy_o(out_lfsr_rdy),
       .lfsr_done(lfsr_done)
+    );
+
+
+    signature_analyzer sa0 (
+        .clk_i(clk),
+        .nreset_i(nreset_i),
+        .en_i(lfsr_en_i_sync),          
+        .rdy_i(out_px_rdy),           
+        .data_i(output_px[PIXEL_WIDTH_OUT-1:0]),     
+        .signature_o(sa_signature),
+        .done_o(sa_done)               
     );
 
 

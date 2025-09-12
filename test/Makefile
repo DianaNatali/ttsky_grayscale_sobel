@@ -20,6 +20,7 @@ ifeq ($(BEHAV), 1)
 	VERILOG_SOURCES += $(PWD)/../src/spi_core.sv
 	VERILOG_SOURCES += $(PWD)/../src/spi_control.sv
 	VERILOG_SOURCES += $(PWD)/../src/LFSR.sv
+	VERILOG_SOURCES += $(PWD)/../src/signature_analyzer.sv
 else
 	VERILOG_SOURCES += $(PWD)/../src/apr/tt_um_gray_sobel.v
 	VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/primitives.v
