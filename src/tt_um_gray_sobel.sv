@@ -25,9 +25,7 @@ module tt_um_gray_sobel (
     assign uio_out[3:0] = 4'b0000;
     assign uio_out[7:5] = 3'b000;
 
-    wire _unused = |ui_in[7:6];
-    wire _unused = |uio_in[7:4];
-
+    wire _unused = |ui_in[7:6] | |uio_in[7:4];
 
     //SPI interface
     logic spi_sck_i;
