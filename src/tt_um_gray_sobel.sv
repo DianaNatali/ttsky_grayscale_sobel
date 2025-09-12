@@ -23,6 +23,11 @@ module tt_um_gray_sobel (
     assign nreset_async_i = rst_n;
     assign uio_oe  = 8'b11110000;          // bits [7:4] output, bits [3:0] input
     assign uio_out[3:0] = 4'b0000;
+    assign uio_out[7:5] = 3'b000;
+
+    wire _unused = |ui_in[7:6];
+    wire _unused = |uio_in[7:4];
+
 
     //SPI interface
     logic spi_sck_i;
