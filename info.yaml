@@ -19,7 +19,6 @@ project:
   source_files:     
     - "tt_um_gray_sobel.sv"   
     - "top_gray_sobel.sv"
-    - "parameters.svh"
     - "sobel_control.sv"
     - "sobel_core.sv"
     - "gray_scale_core.sv"
