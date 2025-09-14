@@ -73,6 +73,16 @@ def gray_convertion(data):
     result = (red>>2)+(red>>5)+(green>>1)+(green>>4)+(blue>>4)+(blue>>5)
     return result
 
+def lfsr_sequence(seed, n_steps=100):
+    lfsr = seed
+    sequence = [lfsr]
+    for _ in range(n_steps-1):
+        bit = ~(( (lfsr >> 12) & 1) ^ ((lfsr >> 3) & 1)) & 1
+        lfsr = ((lfsr << 1) & 0xFFFFFF) | bit  # 24 bits
+        sequence.append(lfsr)
+    return sequence
+
+
 
 #-------------------------------Convert RGB image to grayscale------------------------------------------
 img_original = cv2.imread('test_images/monarch_RGB.jpg', cv2.IMREAD_COLOR) 
@@ -203,7 +213,7 @@ async def monitor_px_rdy(dut, array):
 #     dut.ui_in[1].value = 1
 
 
-#Gray Test For SPI Data!
+# Only Gray test
 @cocotb.test()
 async def tt_um_gray_sobel_gray(dut):
     # Clock cycle
@@ -215,17 +225,15 @@ async def tt_um_gray_sobel_gray(dut):
     dut.ena.value = 0
     dut.ui_in.value = 0
 
-    # Selection = 3
-    dut.ui_in[3].value = 0
+    # Selection = 2 --> Only gray
     dut.ui_in[4].value = 1
+    dut.ui_in[3].value = 0
 
     dut.ui_in[0].value = 1
     dut.ui_in[1].value = 1
     
     # NOT LFSR
-    dut.uio_in[0].value = 0
-    dut.uio_in[1].value = 0
-    dut.uio_in[2].value = 0
+    dut.uio_in.value = 0
     
     N = 10
     random_numbers_array = np.random.randint(0, 2**24, N, dtype=np.uint32)
@@ -249,7 +257,7 @@ async def tt_um_gray_sobel_gray(dut):
     dut.ui_in[0].value = 1
 
 
-#Sobel Test For SPI Data!
+# Only sobel test 
 @cocotb.test()
 async def tt_um_gray_sobel_sobel(dut):
     # Clock cycle
@@ -261,7 +269,7 @@ async def tt_um_gray_sobel_sobel(dut):
     dut.ena.value = 0
     dut.ui_in.value = 0
 
-    # Selection = 1
+    # Selection = 1 --> Only sobel
     dut.ui_in[3].value = 1
     dut.ui_in[4].value = 0
     
@@ -273,9 +281,10 @@ async def tt_um_gray_sobel_sobel(dut):
     # NOT LFSR
     dut.uio_in.value = 0
 
-    
-    N = 4
-    pixel_gray_array = [82, 82, 77, 82, 83, 80, 84, 86, 83, 87, 88, 85, 87, 88, 85, 88, 92, 96, 100, 112, 122, 117, 132, 146, 125, 146, 162, 122, 145, 164, 123, 147, 168, 123, 147, 169]
+    pixel_gray_array = [82, 82, 77, 82, 83, 80, 84, 86, 83, 87, 88, 
+                        85, 87, 88, 85, 88, 92, 96, 100, 112, 122, 
+                        117, 132, 146, 125, 146, 162, 122, 145, 164, 
+                        123, 147, 168, 123, 147, 169]
 
     await reset_dut(dut, 20)
 
@@ -283,24 +292,14 @@ async def tt_um_gray_sobel_sobel(dut):
     await Timer(20)
     dut.ui_in[0].value = 0
     await Timer(20)
-    # for i, data in enumerate(pixel_gray_array[:12]):
-    #     read_data = await spi_transfer_pi(int(data), dut)
-    #     # dut._log.info(f"{i} {read_data:x}\n")
-    #         # dut._log.info(f"{i} {read_data:x}\n")
-    #         # if i == 8:
-    #     dut._log.info(f"{i} {data:x}\n")
-    #     if i == 11:
-    #         dut._log.info(f"{i} {read_data:x}\n")
-    #         #assert read_data == gray_convertion(random_numbers_array[i-1])
 
     for i, data in enumerate(pixel_gray_array[:36]):
         read_data = await spi_transfer_pi(int(data), dut)
         received_bytes = await int_to_bytes_le(read_data, 5)
-        dut._log.info(f"Pixel {i} enviado: {data}")
+        dut._log.info(f"Pixel {i} sended: {data}")
 
-        # Empezar a mostrar resultados a partir del píxel 9 y luego cada 3
         if i >= 9 and (i - 9) % 3 == 0:
-            dut._log.info(f"Resultado convolución {((i - 9) // 3) + 1}: {received_bytes}")
+            dut._log.info(f"Convolution output: {((i - 9) // 3) + 1}: {received_bytes}")
 
 
     await Timer(20)
@@ -308,7 +307,7 @@ async def tt_um_gray_sobel_sobel(dut):
     await Timer(20)
     dut.ui_in[0].value = 1
 
-#Sobel Test For SPI Data!
+# Gray + sobel test 
 @cocotb.test()
 async def tt_um_gray_sobel_gray_sobel(dut):
     # Clock cycle
@@ -320,14 +319,14 @@ async def tt_um_gray_sobel_gray_sobel(dut):
     dut.ena.value = 0
     dut.ui_in.value = 0
 
-    # Selection = 0
+    # Selection = 0 --> Gray + Sobel
     dut.ui_in[3].value = 0
     dut.ui_in[4].value = 0
     
-    dut.ui_in[0].value = 1
-    dut.ui_in[1].value = 1
+    dut.ui_in[0].value = 1 #spi_cs_i
+    dut.ui_in[1].value = 1 #spi_sck_i
     
-    dut.ui_in[5].value = 1
+    dut.ui_in[5].value = 1 #start_sobel_i
     
     # NOT LFSR
     dut.uio_in.value = 0
@@ -344,109 +343,92 @@ async def tt_um_gray_sobel_gray_sobel(dut):
 
     no_rtl_result = []
 
-    await reset_dut(dut, 20)
+    await reset_dut(dut, 20) 
 
     await FallingEdge(dut.clk)
     await Timer(20)
-    dut.ui_in[0].value = 0
+    dut.ui_in[0].value = 0 #spi_cs_i
     await Timer(20)
-    # for i, data in enumerate(pixel_rgb_array):
-    #     dut._log.info(f"Acá1\n")
-    #     read_data = await spi_transfer_pi(int(data), dut)
-    #     dut._log.info(f"{int(data)}\n")
-    #     # dut._log.info(f"{int(read_data)}\n")
-    #     if i == 9:
-    #        dut._log.info(f"Acá2\n")
-    #        dut._log.info(f"{int(read_data)}\n")
-    #        #assert read_data == gray_convertion(random_numbers_array[i-1])
 
     for i, data in enumerate(pixel_rgb_array[:36]):
         read_data = await spi_transfer_pi(int(data), dut)
         received_bytes = await int_to_bytes_le(read_data, 5)
-        dut._log.info(f"Pixel {i} enviado: {data}")
+        dut._log.info(f"Pixel {i} sended: {data}")
 
         if i >= 9 and (i - 9) % 3 == 0:
-            dut._log.info(f"Resultado convolución {((i - 9) // 3) + 1}: {received_bytes}")
+            dut._log.info(f"Convolution output: {((i - 9) // 3) + 1}: {received_bytes}")
 
     await Timer(20)
-    dut.ui_in[0].value = 1
+    dut.ui_in[0].value = 1  #spi_cs_i
     await Timer(20)
-    dut.ui_in[0].value = 1
+    dut.ui_in[0].value = 1  #spi_cs_i
 
+def expected_sa(data_list, width=24):
+    sa = 0
+    for val in data_list:
+        for i in range(width):
+            sa ^= (val >> i) & 0x1
+    return sa
 
+# Seed Stop LFSR + Gray + SA test
+@cocotb.test()
+async def tt_um_gray_sobel_lfsr_sa(dut):
+    # Clock cycle
+    cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
 
-# #Configuration of Seed Stop LFSR! + Gray!
-# @cocotb.test()
-# async def tt_um_gray_sobel_lfsr_seed_stop(dut):
-#     # Clock cycle
-#     cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
+    # dut.VGND.value = 0
+    # dut.VPWR.value = 1
+    # Inital
+    dut.ena.value = 0
+    dut.ui_in.value = 0
 
-#     # Inital
-#     dut.VGND = 0
-#     dut.VPWR = 1
-#     dut.ena.value = 0
-#     dut.ui_in.value = 0
-    
-#     # Selection = 3
-#     dut.ui_in[3].value = 0
-#     dut.ui_in[4].value = 1
-    
-#     dut.ui_in[1].value = 1
-#     dut.ui_in[0].value = 1
-    
-#     # NOT LFSR
-#     dut.uio_in[0].value = 1
-#     dut.uio_in[1].value = 0
-    
-#     N = 10
-#     seed = 0xF37571
-#     stop = 0xD5C501
+    # Selection = 2 --> Only gray
+    dut.ui_in[4].value = 1
+    dut.ui_in[3].value = 0
 
-#     await reset_dut(dut, 20)
+    dut.ui_in[1].value = 1  # CS active
+    dut.ui_in[5].value = 0  # start_sobel_i
 
-#     await FallingEdge(dut.clk)
-#     await Timer(20)
-#     dut.ui_in[1].value = 0
-#     await Timer(20)
-#     for i in range(N):
-#         read_data = await spi_transfer_pi(int(seed), dut)
-#         if i > 0:
-#             #dut._log.info(f"{i} {read_data:x} {random_numbers_array[i-1]:x}")
-#             assert read_data == seed
-            
-    
-#     await Timer(20)
-#     dut.ui_in[1].value = 1
-#     await Timer(20)
+    dut.ui_in[6].value = 1  # SA enable
 
-#     # Inital
-#     dut.ena.value = 0
-#     dut.ui_in.value = 0
-#     dut.ui_in[3].value = 0
-#     dut.ui_in[4].value = 1
+    # LFSR: Enable and enable seed/stop load
+    dut.uio_in[0].value = 1   # Enable LFSR
+    dut.uio_in[1].value = 0   # seed load enable
+    dut.uio_in[2].value = 0   # lfsr_en_i still disable
+    dut.uio_in[3].value = 0   # lfsr config output
     
-#     # Selection = 3
-#     dut.ui_in[1].value = 1
-#     dut.ui_in[0].value = 1
-    
-#     # NOT LFSR
-#     dut.uio_in[0].value = 1
-#     dut.uio_in[1].value = 1
-    
-#     N = 2
-#     await FallingEdge(dut.clk)
-#     await Timer(20)
-#     dut.ui_in[1].value = 0
-#     await Timer(20)
-#     for i in range(N):
-#         read_data = await spi_transfer_pi(int(stop), dut)
-#         if i > 0:
-#             #dut._log.info(f"{i} {read_data:x} {random_numbers_array[i-1]:x}")
-#             assert read_data == stop
-    
-#     await Timer(20)
-#     dut.ui_in[1].value = 1
-#     await Timer(20)
+    seed = 0xF37571
 
-#     dut.uio_in[2].value = 1
-#     await Timer(200)
+    # --- Load seed and stop via SPI ---
+    dut.ui_in[0].value = 0  # CS active
+
+    await spi_transfer_pi(seed, dut)
+    await Timer(20)
+
+    stop = 0xD5C501
+    dut.uio_in[1].value = 1   # stop load enable
+    await spi_transfer_pi(stop, dut)
+    await Timer(20)
+
+    dut.uio_in[1].value = 0 # seed_stop disable
+
+    # --- Enable LFSR ---
+    dut.uio_in[2].value = 1  # lfsr_en_i enabled
+    await Timer(20)
+
+    # --- Wait lfsr_done is enabled ---
+    while not dut.lfsr_done.value:
+        await RisingEdge(dut.clk)
+
+    # --- Explicit Stop LFSR ---
+    dut.uio_in[2].value = 0
+    await Timer(20)
+
+    # --- Read final SA ---
+    await Timer(20)
+    dut.ui_in[0].value = 0  # CS active
+    await Timer(20)
+    read_data = await spi_transfer_pi(0, dut)  # dummy for reading signature_o
+    dut.ui_in[0].value = 1  # CS disable
+
+    dut._log.info(f"Final signature SA: {read_data:x}")
