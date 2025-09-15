@@ -106,6 +106,7 @@ else:
 #----------------------------------------cocotb test bench----------------------------------------------
 #reset
 async def reset_dut(dut, duration_ns):
+    await FallingEdge(dut.clk)
     dut.rst_n.value = 0
     await Timer(duration_ns, units="ns")
     dut.rst_n.value = 1

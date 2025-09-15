@@ -11,6 +11,8 @@ COCOTB_SIM = 1
 ifeq ($(SIM),vcs)
 COMPILE_ARGS += +incdir+$(PWD)/../src/
 COMPILE_ARGS += +vcs+loopreport+5000000
+#COMPILE_ARGS += +define+FUNCTIONAL
+
 WAVES ?= FSDB
 endif
 
