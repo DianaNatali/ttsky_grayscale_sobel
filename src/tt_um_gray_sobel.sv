@@ -166,7 +166,7 @@ module tt_um_gray_sobel (
 
     logic [2:0] LEDs;
     always_ff @(posedge clk) begin
-      LEDs = {sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync};
+      LEDs <= {sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync};
     end 
 
     always_comb begin
