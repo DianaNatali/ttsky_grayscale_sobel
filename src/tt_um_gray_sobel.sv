@@ -18,7 +18,6 @@ module tt_um_gray_sobel (
 
     
     logic nreset_async_i;
-    logic [7:0] uo_out_q;
 
     assign nreset_async_i = rst_n;
     assign uio_oe  = 8'b11100000;        // bits [7:5] output, bits [4:0] input
@@ -165,30 +164,49 @@ module tt_um_gray_sobel (
     assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy : '0;      
     assign in_px_rdy = LFSR_enable_i_sync ? out_lfsr_rdy : in_data_rdy;
 
-    always_comb begin
-      if (sa_en_i_sync) begin   // SA mode
-          if (LFSR_enable_i_sync) begin
-              output_data = (lfsr_done & ~lfsr_en_i_sync) ? sa_signature : 24'd0;
-          end else begin
-              output_data = frame_done_i_sync ? sa_signature :  24'd0;
-          end
-      end else begin
-          if (LFSR_enable_i_sync) begin
-              if (lfsr_mode_sel_i_sync) begin
-                  output_data = output_px;  // Output is img processing pipeline driven by LFSR
-              end else begin
-                  output_data = output_lfsr_data; // // Output is seed/stop LFRS
-              end
-          end else begin
-              output_data = output_px; // Output is img processing pipeline driven by input pixels
-          end
-      end
-  end
-  
+    logic [2:0] LEDs;
+    always_ff @(posedge clk) begin
+      LEDs = {sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync};
+    end 
 
-    assign out_data_rdy = sa_en_i_sync ? 
-                        (LFSR_enable_i_sync ? lfsr_done : frame_done_i_sync)
-                        : (LFSR_enable_i_sync ? (lfsr_mode_sel_i_sync ? out_px_rdy : out_config_rdy) : out_px_rdy);
+    always_comb begin
+      case({sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync})
+        // SA mode + LFSR enabled
+        3'b110: begin
+            output_data  = (lfsr_done & ~lfsr_en_i_sync) ? sa_signature : '0;
+            out_data_rdy = lfsr_done;
+        end
+
+        // SA mode + LFSR disabled
+        3'b100: begin
+            output_data  = frame_done_i_sync ? sa_signature : '0;
+            out_data_rdy = frame_done_i_sync;
+        end
+
+        // !SA mode + LFSR enabled + LFSR mode select=1
+        3'b011: begin
+            output_data  = output_px;
+            out_data_rdy = out_px_rdy;
+        end
+
+        // !SA mode + LFSR enabled + LFSR mode select=0
+        3'b010: begin
+            output_data  = output_lfsr_data;
+            out_data_rdy = out_config_rdy;
+        end
+
+        // !SA mode + LFSR disabled
+        3'b000: begin
+            output_data  = output_px;
+            out_data_rdy = out_px_rdy;
+        end
+
+        default: begin
+            output_data  = '0;
+            out_data_rdy = '0;
+        end
+    endcase
+  end
 
     spi_control spi0 (
       .clk_i(clk),
@@ -239,12 +257,10 @@ module tt_um_gray_sobel (
         .signature_o(sa_signature)
     );
 
-    assign uo_out_q[1:0] = select_process_i_sync;
-    assign uo_out_q[2]   = ena;
-    assign uo_out_q[3]   = spi_sdo_o;
-    assign uo_out_q[4]   = lfsr_done;
-    assign uo_out_q[7:5] = 3'b000;
-
-    assign uo_out = uo_out_q;
+    assign uo_out[1:0] = select_process_i_sync;
+    assign uo_out[2]   = ena;
+    assign uo_out[3]   = spi_sdo_o;
+    assign uo_out[4]   = lfsr_done;
+    assign uo_out[7:5] = LEDs;
 
 endmodule

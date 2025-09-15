@@ -7,6 +7,17 @@ COCOTB_HDL_TIMEUNIT = "1ns"
 COCOTB_HDL_TIMEPRECISION = "10ps"
 BEHAV?=1
 COCOTB_SIM = 1
+<<<<<<< HEAD
+=======
+
+ifeq ($(SIM),vcs)
+COMPILE_ARGS += +incdir+$(PWD)/../src/
+COMPILE_ARGS += +vcs+loopreport+5000000
+WAVES ?= FSDB
+endif
+
+PWD=$(shell pwd)
+>>>>>>> 8c8fa39cc59a30724576bc5f52fd64874779b3b1
 
 PWD=$(shell pwd)
 ifeq ($(BEHAV), 1)
