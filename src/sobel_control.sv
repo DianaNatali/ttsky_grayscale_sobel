@@ -17,7 +17,7 @@ module sobel_control (
         output logic   px_rdy_o
     );
 
-    logic [SOBEL_COUNTER_MAX_BITS:0] counter_sobel;
+    logic [SOBEL_COUNTER_MAX_BITS-1:0] counter_sobel;
     logic [MAX_RESOLUTION_BITS-1:0] counter_pixels;
     logic px_ready;
     
@@ -78,21 +78,21 @@ module sobel_control (
     integer i;
     always_ff @(posedge clk_i or negedge nreset_i)begin
         if (!nreset_i)begin
-            counter_sobel <= 'b0;
-            counter_pixels <= 'b0;
-            px_ready <= 'b0;
+            counter_sobel <= 4'd0;
+            counter_pixels <= 24'd0;
+            px_ready <= 1'b0;
             for (i = 0; i < 9; i = i + 1) begin
-                sobel_pixels[i] <= 'b0;
+                sobel_pixels[i] <= 8'd0;
             end
         end else begin
             case (next)
                 IDLE: begin
-                    px_ready <= 'b0;
+                    px_ready <= 1'b0;
                     counter_pixels <= 'b0;
-                    counter_sobel <= 'b0;
+                    counter_sobel <= 4'b0;
                 end
                 FIRST_MATRIX: begin
-                    px_ready <= 'b0;
+                    px_ready <= 1'b0;
                     if (px_rdy_i) begin
                         case(counter_sobel)
                             0: sobel_pixels[0] <= in_px_sobel_i;
@@ -105,16 +105,16 @@ module sobel_control (
                             7: sobel_pixels[7] <= in_px_sobel_i;
                             8: sobel_pixels[8] <= in_px_sobel_i;
                         endcase
-                        counter_sobel <= counter_sobel + 1;
+                        counter_sobel <= counter_sobel + 4'd1;
                         if (counter_sobel == 8) begin
-                            counter_pixels <= counter_pixels + 1;
-                            counter_sobel <= 'b0;
-                            px_ready <= 'b1;
+                            counter_pixels <= counter_pixels + 24'd1;
+                            counter_sobel <= 4'd0;
+                            px_ready <= 1'b1;
                         end
                     end
                 end
                 NEXT_MATRIX: begin
-                    px_ready <= 'b0;
+                    px_ready <= 1'b0;
                     if (px_rdy_i) begin
                         case(counter_sobel)
                             0: begin 
@@ -131,18 +131,18 @@ module sobel_control (
                             1: sobel_pixels[7] <= in_px_sobel_i;
                             2: sobel_pixels[8] <= in_px_sobel_i;
                         endcase
-                        counter_sobel <= counter_sobel + 1;
+                        counter_sobel <= counter_sobel + 4'd1;
                         if (counter_sobel == 2) begin
-                            counter_pixels <= counter_pixels + 1;
-                            counter_sobel <= 'b0;
-                            px_ready <= 'b1;
+                            counter_pixels <= counter_pixels + 24'd1;
+                            counter_sobel <= 4'd0;
+                            px_ready <= 1'b1;
                         end
                     end
                 end
                 default: begin
-                    px_ready <= 'b0;
-                    counter_pixels <= 'b0;
-                    counter_sobel <= 'b0;
+                    px_ready <= 1'b0;
+                    counter_pixels <= 24'd0;
+                    counter_sobel <= 4'd0;
                 end
             endcase
         end
@@ -150,10 +150,10 @@ module sobel_control (
 
     always_ff @(posedge clk_i or negedge nreset_i)begin
         if (!nreset_i)begin
-            out_sobel <= '0;
-            px_rdy_o <= '0;
+            out_sobel <= 8'd0;
+            px_rdy_o <= 1'd0;
         end else begin
-            px_rdy_o <= '0;
+            px_rdy_o <= 1'd0;
             if(px_ready) begin
                 out_sobel <= out_sobel_core;
                 px_rdy_o <= px_ready;
