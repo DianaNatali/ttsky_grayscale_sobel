@@ -165,25 +165,27 @@ module tt_um_gray_sobel (
     assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy :  1'd0;      
     assign in_px_rdy = LFSR_enable_i_sync ? out_lfsr_rdy : in_data_rdy;
 
-    always_comb begin
-      output_data = output_px;  //Default
-  
-      if (sa_en_i_sync) begin   // SA mode
-          if (LFSR_enable_i_sync) begin
-              output_data = (lfsr_done & ~lfsr_en_i_sync) ? sa_signature : 24'd0;
-          end else begin
-              output_data = frame_done_i_sync ? sa_signature :  24'd0;
-          end
-      end else begin
-          if (LFSR_enable_i_sync) begin
-              if (lfsr_mode_sel_i_sync) begin
-                  output_data = output_px;  // Output is img processing pipeline driven by LFSR
-              end else begin
-                  output_data = output_lfsr_data; // // Output is seed/stop LFRS
-              end
-          end else begin
-              output_data = output_px; // Output is img processing pipeline driven by input pixels
-          end
+    always_ff @(posedge clk or negedge rst_n) begin
+      if(!nreset_i)
+          output_data <= 24'd0;
+      else begin
+        if (sa_en_i_sync) begin   // SA mode
+            if (LFSR_enable_i_sync) begin
+                output_data <= (lfsr_done & ~lfsr_en_i_sync) ? sa_signature : 24'd0;
+            end else begin
+                output_data <= frame_done_i_sync ? sa_signature :  24'd0;
+            end
+        end else begin
+            if (LFSR_enable_i_sync) begin
+                if (lfsr_mode_sel_i_sync) begin
+                    output_data <= output_px;  // Output is img processing pipeline driven by LFSR
+                end else begin
+                    output_data <= output_lfsr_data; // // Output is seed/stop LFRS
+                end
+            end else begin
+                output_data <= output_px; // Output is img processing pipeline driven by input pixels
+            end
+        end
       end
   end
   
