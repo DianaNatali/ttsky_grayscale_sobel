@@ -22,8 +22,8 @@ module gray_scale_core(
 
     always_ff @(posedge clk_i or negedge nreset_i)begin
         if (!nreset_i)begin
-            out_px_gray_o <= 'b0;
-            px_rdy_o <= 'b0;
+            out_px_gray_o <= '0;
+            px_rdy_o <= '0;
         end else begin
             px_rdy_o <= px_rdy_i;
             out_px_gray_o <= (red>>2)+(red>>5)+(green>>1)+(green>>4)+(blue>>4)+(blue>>5);

@@ -159,10 +159,10 @@ module tt_um_gray_sobel (
     logic out_lfsr_rdy;
     logic out_config_rdy;
 
-    assign input_lfsr_data = LFSR_enable_i_sync ? input_data : 0;      
+    assign input_lfsr_data = LFSR_enable_i_sync ? input_data : '0;      
     assign input_pixel = LFSR_enable_i_sync ? lfsr_out_data : input_data;
 
-    assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy : 0;      
+    assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy : '0;      
     assign in_px_rdy = LFSR_enable_i_sync ? out_lfsr_rdy : in_data_rdy;
 
     always_comb begin
@@ -244,7 +244,7 @@ module tt_um_gray_sobel (
 
     always_ff @(posedge clk or negedge nreset_i) begin
       if (!nreset_i) begin
-        uo_out_q <= 8'b00000000;
+        uo_out_q <= '0;
       end else begin
         uo_out_q[1:0] <= select_process_i_sync;
         uo_out_q[2]   <= ena;

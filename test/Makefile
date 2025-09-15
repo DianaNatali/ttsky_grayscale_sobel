@@ -1,14 +1,18 @@
 # Makefile
 
 # defaults
-SIM ?= icarus
+SIM ?= vcs
 TOPLEVEL_LANG ?= verilog
 COCOTB_HDL_TIMEUNIT = "1ns"
 COCOTB_HDL_TIMEPRECISION = "10ps"
 BEHAV?=1
 COCOTB_SIM = 1
-
+COMPILE_ARGS += +incdir+$(PWD)/../src/
+COMPILE_ARGS += +vcs+loopreport+5000000
+ 
 PWD=$(shell pwd)
+WAVES ?= FSDB
+
 ifeq ($(BEHAV), 1)
 	VERILOG_SOURCES += $(PWD)/../src/parameters.svh
 	VERILOG_SOURCES += $(PWD)/../src/tt_um_gray_sobel.sv
@@ -22,9 +26,9 @@ ifeq ($(BEHAV), 1)
 	VERILOG_SOURCES += $(PWD)/../src/LFSR.sv
 	VERILOG_SOURCES += $(PWD)/../src/signature_analyzer.sv
 else
-	VERILOG_SOURCES += $(PWD)/../src/apr/tt_um_gray_sobel.pnl.v
-	VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/primitives.v
-	VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/sky130_fd_sc_hd.v
+	include $(PWD)/../postapr/Makefile.skywater
+	#COMPILE_ARGS += +define+USE_POWER_PINS
+	VERILOG_SOURCES += $(PWD)/../postapr/tt_um_gray_sobel.nl.v
 endif
 
 #TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
@@ -37,7 +41,13 @@ MODULE = tt_um_gray_sobel_TB
 #COMPILE_ARGS += -PUSE_POWER_PINS=1
 
 # include cocotb's make rules to take care of the simulator setup
-include $(shell cocotb-config --makefiles)/Makefile.sim
+# include cocotb's make rules to take care of the simulator setup
+include ../postapr/Makefile.sim
+
+VERDI       := verdi
+VERDI_OPTS  := -ssf
+verdi :
+	$(VERDI) $(VERDI_OPTS) $(FSDB_FILE) -smart_load_kdb &
 
 clean_output:
 	rm -rf  *.jpg *.txt *~

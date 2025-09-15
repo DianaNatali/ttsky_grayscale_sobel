@@ -112,7 +112,7 @@ async def reset_dut(dut, duration_ns):
     dut.rst_n._log.debug("Reset complete")
 
 #clock
-@cocotb.coroutine
+#@cocotb.coroutine
 async def clock_generator(dut):
     # Infinite loop to generate the clock
     while True:
@@ -263,8 +263,8 @@ async def tt_um_gray_sobel_sobel(dut):
     # Clock cycle
     cocotb.fork(Clock(dut.clk, 2 * half_period, units="ns").start())
 
-    # dut.VGND.value = 0
-    # dut.VPWR.value = 1
+    #dut.VGND.value = 0
+    #dut.VPWR.value = 1
     # Inital
     dut.ena.value = 0
     dut.ui_in.value = 0

@@ -4,7 +4,7 @@
   `include "parameters.svh"
 `endif
 module spi_core #(
-    parameter WORD_SIZE = MAX_PIXEL_BITS
+    parameter [$clog2(MAX_PIXEL_BITS):0] WORD_SIZE = MAX_PIXEL_BITS
 )(
     input logic sck_i
     ,input logic sdi_i
@@ -30,7 +30,7 @@ module spi_core #(
             counter <= '0;
         else begin
                 if(counter == WORD_SIZE) counter <= 'h1;
-                else counter <= counter + 1;
+                else counter <= counter + 1'b1;
         end
     end
 
