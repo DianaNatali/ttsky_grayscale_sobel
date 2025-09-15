@@ -64,11 +64,11 @@ module sobel_control (
                 else next = IDLE;
             end
             FIRST_MATRIX: begin 
-                if (counter_pixels == 'b1) next = NEXT_MATRIX; 
+                if (counter_pixels == 1) next = NEXT_MATRIX; 
                 else next = FIRST_MATRIX;
             end
             NEXT_MATRIX:begin
-                if (start_sobel_i == 'b0) next = FIRST_MATRIX; 
+                if (start_sobel_i == 0) next = FIRST_MATRIX; 
                 else next = NEXT_MATRIX;
             end
             default: next = IDLE;
