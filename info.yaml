@@ -38,8 +38,8 @@ pinout:
   ui[3]: "select_process_i[0]"
   ui[4]: "select_process_i[1]"
   ui[5]: "start_sobel_i"
-  ui[6]: ""
-  ui[7]: ""
+  ui[6]: "sa_en_i"
+  ui[7]: "frame_done_i"
 
   # Outputs
   uo[0]: "select_process_i[0]"
@@ -55,8 +55,8 @@ pinout:
   uio[0]: "LFSR_enable_i"
   uio[1]: "seed_stop_i"
   uio[2]: "lfsr_en_i"
-  uio[3]: "LFSR_sel_debug"
-  uio[4]: "sa_done"
+  uio[3]: "sa_done"
+  uio[4]: ""
   uio[5]: ""
   uio[6]: ""
   uio[7]: ""
