@@ -15,7 +15,7 @@ module spi_core #(
     ,output logic [WORD_SIZE-1:0] data_rx_o
     ,output logic rxtx_done_o
 );
-    localparam CNT_SIZE = $clog2(WORD_SIZE);
+    localparam CNT_SIZE = 5;
 
     logic nreset_i;
 
@@ -27,7 +27,7 @@ module spi_core #(
 
     always_ff @(negedge sck_i or negedge nreset_i) begin
         if (!nreset_i)
-            counter <= '0;
+            counter <= 6'd0;
         else begin
                 if(counter == WORD_SIZE) counter <= 'h1;
                 else counter <= counter + 1'b1;
@@ -36,7 +36,7 @@ module spi_core #(
 
     always @(posedge sck_i or negedge nreset_i) begin
         if (!nreset_i)
-            data_rx_o <= '0;
+            data_rx_o <= 24'd0;
         else begin
                 data_rx_o <= {data_rx_o[WORD_SIZE-2:0],sdi_i};
         end
@@ -44,7 +44,7 @@ module spi_core #(
 
     always @(negedge sck_i or negedge nreset_i) begin
         if (!nreset_i)
-            sdo_register <= '0;
+            sdo_register <= 24'd0;
         else begin
             if(counter == WORD_SIZE)
                 sdo_register <= data_tx_i;
@@ -55,7 +55,7 @@ module spi_core #(
 
     always @(posedge sck_i or negedge nreset_i) begin
         if (!nreset_i)
-           rxtx_done_o <= '0;
+           rxtx_done_o <= 1'b0;
         else begin
             if(counter == WORD_SIZE)
                 rxtx_done_o <= 1'b1;

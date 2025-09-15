@@ -17,7 +17,7 @@ module sobel_control (
         output logic   px_rdy_o
     );
 
-    logic [SOBEL_COUNTER_MAX_BITS:0] counter_sobel;
+    logic [SOBEL_COUNTER_MAX_BITS-1:0] counter_sobel;
     logic [MAX_RESOLUTION_BITS-1:0] counter_pixels;
     logic px_ready;
     
@@ -150,10 +150,10 @@ module sobel_control (
 
     always_ff @(posedge clk_i or negedge nreset_i)begin
         if (!nreset_i)begin
-            out_sobel <= '0;
-            px_rdy_o <= '0;
+            out_sobel <= 8'd0;
+            px_rdy_o <= 1'd0;
         end else begin
-            px_rdy_o <= '0;
+            px_rdy_o <= 1'd0;
             if(px_ready) begin
                 out_sobel <= out_sobel_core;
                 px_rdy_o <= px_ready;

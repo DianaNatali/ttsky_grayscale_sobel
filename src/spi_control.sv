@@ -42,9 +42,9 @@ module spi_control (
 
     always_ff @(posedge clk_i or negedge nreset_i) begin
         if(!nreset_i) begin
-            rxtx_done_reg <= '0;
-            data_rx <= '0;
-            px_rdy_i_spi_o <= '0;
+            rxtx_done_reg <= 1'b0;
+            data_rx <= 24'd0;
+            px_rdy_i_spi_o <= 1'b0;
         end else begin
             rxtx_done_reg <= rxtx_done;
             if(rxtx_done_rising)begin
@@ -52,14 +52,14 @@ module spi_control (
                 px_rdy_i_spi_o <= 1'b1;
             end else begin
                 data_rx <= data_rx;
-                px_rdy_i_spi_o <= '0;
+                px_rdy_i_spi_o <= 1'b0;
             end
         end
     end
 
     always_ff @(posedge clk_i or negedge nreset_i) begin
         if(!nreset_i) begin
-            data_tx <= '0;
+            data_tx <= 24'd0;
         end else begin
             if(px_rdy_o_spi_i)begin
                 data_tx <= output_px_sobel_i;

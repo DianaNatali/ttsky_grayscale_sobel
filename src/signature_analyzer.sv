@@ -18,9 +18,9 @@ module signature_analyzer(
 
     always_ff @(posedge clk_i or negedge nreset_i) begin
         if (!nreset_i) begin
-            signature_q <= '0;
+            signature_q <= 24'd0;
         end else if (clear_i) begin
-            signature_q <= '0;  
+            signature_q <= 24'd0;  
         end else if (en_i && rdy_i) begin
             signature_q <= {signature_q[MAX_PIXEL_BITS-2:0], 1'b0} 
                            ^ {{(MAX_PIXEL_BITS-PIXEL_WIDTH_OUT){1'b0}}, data_i};
