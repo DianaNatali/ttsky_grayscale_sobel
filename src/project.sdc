@@ -4,7 +4,7 @@ set output_delay_value [ expr $::env(CLOCK_PERIOD) * $::env(IO_PCT) ]
 set_max_fanout $::env(MAX_FANOUT_CONSTRAINT) [ current_design ]
 set cap_load [ expr $::env(OUTPUT_CAP_LOAD) / 1000.0 ] ;# fF -> pF
 
-set spi_ports [list [get_ports "ui_in\[0\]"] [get_ports "ui_in\[2\]"]]
+set spi_inputs [list [get_ports "ui_in\[0\]"] [get_ports "ui_in\[2\]"]]
 set clk_port [get_ports "clk"]
 set ui_in1_port [get_ports "ui_in\[1\]"]
 set all_inputs_temp [all_inputs]
@@ -16,7 +16,7 @@ set idx [lsearch $all_inputs_temp $ui_in1_port]
 if {$idx != -1} {
     set all_inputs_temp [lreplace $all_inputs_temp $idx $idx]
 }
-foreach port $spi_ports {
+foreach port $spi_inputs {
     set idx [lsearch $all_inputs_temp $port]
     if {$idx != -1} {
         set all_inputs_temp [lreplace $all_inputs_temp $idx $idx]
