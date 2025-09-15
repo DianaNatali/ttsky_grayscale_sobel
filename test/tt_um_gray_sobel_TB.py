@@ -396,6 +396,8 @@ async def tt_um_gray_sobel_lfsr_sa(dut):
     dut.uio_in[1].value = 0   # seed load enable
     dut.uio_in[2].value = 0   # lfsr_en_i still disable
     dut.uio_in[3].value = 0   # lfsr config output
+    dut.uio_in[4].value = 0   # lfsr config output
+
     
     seed = 0xF37571
 
@@ -417,12 +419,11 @@ async def tt_um_gray_sobel_lfsr_sa(dut):
     await Timer(20)
 
     # --- Wait lfsr_done is enabled ---
-    while not dut.lfsr_done.value:
+    while not dut.uo_out[4].value:
         await RisingEdge(dut.clk)
 
     # --- Explicit Stop LFSR ---
     dut.uio_in[2].value = 0
-    await Timer(20)
 
     # --- Read final SA ---
     await Timer(20)
@@ -432,3 +433,8 @@ async def tt_um_gray_sobel_lfsr_sa(dut):
     dut.ui_in[0].value = 1  # CS disable
 
     dut._log.info(f"Final signature SA: {read_data:x}")
+
+    dut.uio_in[4].value = 1
+    await Timer(20)
+    dut.uio_in[4].value = 0
+    await RisingEdge(dut.clk)

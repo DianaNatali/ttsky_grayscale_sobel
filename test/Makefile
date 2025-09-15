@@ -22,7 +22,7 @@ ifeq ($(BEHAV), 1)
 	VERILOG_SOURCES += $(PWD)/../src/LFSR.sv
 	VERILOG_SOURCES += $(PWD)/../src/signature_analyzer.sv
 else
-	VERILOG_SOURCES += $(PWD)/../src/apr/tt_um_gray_sobel.v
+	VERILOG_SOURCES += $(PWD)/../src/apr/tt_um_gray_sobel.pnl.v
 	VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/primitives.v
 	VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/sky130_fd_sc_hd.v
 endif
