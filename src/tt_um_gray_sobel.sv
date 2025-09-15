@@ -21,7 +21,7 @@ module tt_um_gray_sobel (
     logic [7:0] uo_out_q;
 
     assign nreset_async_i = rst_n;
-    assign uio_oe  = 8'b11100000;          // bits [7:5] output, bits [4:0] input
+    assign uio_oe  = 8'b11100000;        // bits [7:5] output, bits [4:0] input
     assign uio_out[7:0] = 8'b00000000;
 
     wire _unused = |uio_in[7:5];
