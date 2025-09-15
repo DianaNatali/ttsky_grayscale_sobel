@@ -239,17 +239,10 @@ module tt_um_gray_sobel (
         .signature_o(sa_signature)
     );
 
-
-    always_ff @(posedge clk or negedge nreset_i) begin
-      if (!nreset_i) begin
-        uo_out_q <= '0;
-      end else begin
-        uo_out_q[1:0] <= select_process_i_sync;
-        uo_out_q[2]   <= ena;
-        uo_out_q[3]   <= spi_sdo_o;
-        uo_out_q[4]   <= lfsr_done;
-      end
-    end
+    assign uo_out_q[1:0] = select_process_i_sync;
+    assign uo_out_q[2]   = ena;
+    assign uo_out_q[3]   = spi_sdo_o;
+    assign uo_out_q[4]   = lfsr_done;
 
     assign uo_out = uo_out_q;
 
