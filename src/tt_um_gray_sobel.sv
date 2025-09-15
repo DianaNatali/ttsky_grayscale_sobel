@@ -18,7 +18,6 @@ module tt_um_gray_sobel (
 
     
     logic nreset_async_i;
-    logic [7:0] uo_out_q;
 
     assign nreset_async_i = rst_n;
     assign uio_oe  = 8'b11100000;          // bits [7:5] output, bits [4:0] input
@@ -165,6 +164,11 @@ module tt_um_gray_sobel (
     assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy : '0;      
     assign in_px_rdy = LFSR_enable_i_sync ? out_lfsr_rdy : in_data_rdy;
 
+    logic [2:0] LEDs;
+    always_ff @(posedge clk) begin
+      LEDs = {sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync};
+    end 
+
     always_comb begin
       case({sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync})
         // SA mode + LFSR enabled
@@ -253,12 +257,10 @@ module tt_um_gray_sobel (
         .signature_o(sa_signature)
     );
 
-    assign uo_out_q[1:0] = select_process_i_sync;
-    assign uo_out_q[2]   = ena;
-    assign uo_out_q[3]   = spi_sdo_o;
-    assign uo_out_q[4]   = lfsr_done;
-    assign uo_out_q[5:7] = '0;
-
-    assign uo_out = uo_out_q;
+    assign uo_out[1:0] = select_process_i_sync;
+    assign uo_out[2]   = ena;
+    assign uo_out[3]   = spi_sdo_o;
+    assign uo_out[4]   = lfsr_done;
+    assign uo_out[7:5] = LEDs;
 
 endmodule
