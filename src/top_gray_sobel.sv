@@ -66,12 +66,12 @@ module top_gray_sobel(
             end
             2'b10: begin
                 out_pixel_o = {{ZERO_PAD_WIDTH{1'b0}}, out_px_gray};     //Only grayscale
-                px_rdy_i_sobel = '0;   
+                px_rdy_i_sobel = 1'b0;   
                 px_rdy_o = px_rdy_o_gray;
             end
             2'b11: begin
                 out_pixel_o = in_pixel_i;                                 //Bypass
-                px_rdy_i_sobel = '0;                          
+                px_rdy_i_sobel = 1'b0;                          
                 px_rdy_o = px_rdy_i;
             end
             default: begin
