@@ -7,8 +7,6 @@ COCOTB_HDL_TIMEUNIT = "1ns"
 COCOTB_HDL_TIMEPRECISION = "10ps"
 BEHAV?=1
 COCOTB_SIM = 1
-<<<<<<< HEAD
-=======
 
 ifeq ($(SIM),vcs)
 COMPILE_ARGS += +incdir+$(PWD)/../src/
@@ -17,25 +15,22 @@ WAVES ?= FSDB
 endif
 
 PWD=$(shell pwd)
->>>>>>> 8c8fa39cc59a30724576bc5f52fd64874779b3b1
-
-PWD=$(shell pwd)
 ifeq ($(BEHAV), 1)
-	VERILOG_SOURCES += $(PWD)/../src/parameters.svh
-	VERILOG_SOURCES += $(PWD)/../src/tt_um_gray_sobel.sv
-	VERILOG_SOURCES += $(PWD)/../src/top_gray_sobel.sv
-	VERILOG_SOURCES += $(PWD)/../src/sobel_control.sv
-	VERILOG_SOURCES += $(PWD)/../src/sobel_core.sv
-	VERILOG_SOURCES += $(PWD)/../src/gray_scale_core.sv
-	VERILOG_SOURCES += $(PWD)/../src/async_nreset_synchronizers.sv
-	VERILOG_SOURCES += $(PWD)/../src/spi_core.sv
-	VERILOG_SOURCES += $(PWD)/../src/spi_control.sv
-	VERILOG_SOURCES += $(PWD)/../src/LFSR.sv
-	VERILOG_SOURCES += $(PWD)/../src/signature_analyzer.sv
+VERILOG_SOURCES += $(PWD)/../src/parameters.svh
+VERILOG_SOURCES += $(PWD)/../src/tt_um_gray_sobel.sv
+VERILOG_SOURCES += $(PWD)/../src/top_gray_sobel.sv
+VERILOG_SOURCES += $(PWD)/../src/sobel_control.sv
+VERILOG_SOURCES += $(PWD)/../src/sobel_core.sv
+VERILOG_SOURCES += $(PWD)/../src/gray_scale_core.sv
+VERILOG_SOURCES += $(PWD)/../src/async_nreset_synchronizers.sv
+VERILOG_SOURCES += $(PWD)/../src/spi_core.sv
+VERILOG_SOURCES += $(PWD)/../src/spi_control.sv
+VERILOG_SOURCES += $(PWD)/../src/LFSR.sv
+VERILOG_SOURCES += $(PWD)/../src/signature_analyzer.sv
 else
-	VERILOG_SOURCES += $(PWD)/../src/apr/tt_um_gray_sobel.pnl.v
-	VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/primitives.v
-	VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/sky130_fd_sc_hd.v
+VERILOG_SOURCES += $(PWD)/../src/apr/tt_um_gray_sobel.pnl.v
+VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/primitives.v
+VERILOG_SOURCES += $(PWD)/../src/pdk_verilog/sky130_fd_sc_hd.v
 endif
 
 #TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
