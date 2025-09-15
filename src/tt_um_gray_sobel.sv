@@ -239,10 +239,11 @@ module tt_um_gray_sobel (
         .signature_o(sa_signature)
     );
 
-    assign uo_out_q[1:0] = select_process_i_sync;
+    assign uo_out[1:0] = select_process_i_sync;
     assign uo_out_q[2]   = ena;
     assign uo_out_q[3]   = spi_sdo_o;
     assign uo_out_q[4]   = lfsr_done;
+    assign uo_out_q[7:5] = 3'b000;
 
     assign uo_out = uo_out_q;
 
