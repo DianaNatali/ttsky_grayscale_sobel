@@ -7,11 +7,14 @@ COCOTB_HDL_TIMEUNIT = "1ns"
 COCOTB_HDL_TIMEPRECISION = "10ps"
 BEHAV?=1
 COCOTB_SIM = 1
+
+ifeq ($(SIM),vcs)
 COMPILE_ARGS += +incdir+$(PWD)/../src/
 COMPILE_ARGS += +vcs+loopreport+5000000
- 
-PWD=$(shell pwd)
 WAVES ?= FSDB
+endif
+
+PWD=$(shell pwd)
 
 ifeq ($(BEHAV), 1)
 	VERILOG_SOURCES += $(PWD)/../src/parameters.svh
