@@ -20,7 +20,7 @@ module tt_um_gray_sobel (
     logic nreset_async_i;
 
     assign nreset_async_i = rst_n;
-    assign uio_oe  = 8'b11100000;          // bits [7:5] output, bits [4:0] input
+    assign uio_oe  = 8'b11100000;        // bits [7:5] output, bits [4:0] input
     assign uio_out[7:0] = 8'b00000000;
 
     wire _unused = |uio_in[7:5];
@@ -166,7 +166,7 @@ module tt_um_gray_sobel (
 
     logic [2:0] LEDs;
     always_ff @(posedge clk) begin
-      LEDs = {sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync};
+      LEDs <= {sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync};
     end 
 
     always_comb begin

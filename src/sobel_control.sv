@@ -80,7 +80,7 @@ module sobel_control (
         if (!nreset_i)begin
             counter_sobel <= '0;
             counter_pixels <= '0;
-            px_ready <= '0;
+            px_ready <= 1'b0;
             for (i = 0; i < 9; i = i + 1) begin
                 sobel_pixels[i] <= '0;
             end
@@ -140,7 +140,7 @@ module sobel_control (
                     end
                 end
                 default: begin
-                    px_ready <= '0;
+                    px_ready <= 1'b0;
                     counter_pixels <= '0;
                     counter_sobel <= '0;
                 end
