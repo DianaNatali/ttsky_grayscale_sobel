@@ -158,10 +158,10 @@ module tt_um_gray_sobel (
     logic out_lfsr_rdy;
     logic out_config_rdy;
 
-    assign input_lfsr_data = LFSR_enable_i_sync ? input_data : '0;      
+    assign input_lfsr_data = LFSR_enable_i_sync ? input_data : 24'd0;      
     assign input_pixel = LFSR_enable_i_sync ? lfsr_out_data : input_data;
 
-    assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy : '0;      
+    assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy : 1'b0;      
     assign in_px_rdy = LFSR_enable_i_sync ? out_lfsr_rdy : in_data_rdy;
 
     logic [2:0] LEDs;
@@ -173,13 +173,13 @@ module tt_um_gray_sobel (
       case({sa_en_i_sync, LFSR_enable_i_sync, lfsr_mode_sel_i_sync})
         // SA mode + LFSR enabled
         3'b110: begin
-            output_data  = (lfsr_done & ~lfsr_en_i_sync) ? sa_signature : '0;
+            output_data  = (lfsr_done & ~lfsr_en_i_sync) ? sa_signature : 24'd0;
             out_data_rdy = lfsr_done;
         end
 
         // SA mode + LFSR disabled
         3'b100: begin
-            output_data  = frame_done_i_sync ? sa_signature : '0;
+            output_data  = frame_done_i_sync ? sa_signature : 24'd0;
             out_data_rdy = frame_done_i_sync;
         end
 
@@ -202,8 +202,8 @@ module tt_um_gray_sobel (
         end
 
         default: begin
-            output_data  = '0;
-            out_data_rdy = '0;
+            output_data  = 24'd0;
+            out_data_rdy = 1'b0;
         end
     endcase
   end
