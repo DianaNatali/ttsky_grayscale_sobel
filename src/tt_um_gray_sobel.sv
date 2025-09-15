@@ -159,10 +159,10 @@ module tt_um_gray_sobel (
     logic out_lfsr_rdy;
     logic out_config_rdy;
 
-    assign input_lfsr_data = LFSR_enable_i_sync ? input_data : 0;      
+    assign input_lfsr_data = LFSR_enable_i_sync ? input_data :  24'd0;      
     assign input_pixel = LFSR_enable_i_sync ? lfsr_out_data : input_data;
 
-    assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy : 0;      
+    assign in_lfsr_rdy = LFSR_enable_i_sync ? in_data_rdy :  1'd0;      
     assign in_px_rdy = LFSR_enable_i_sync ? out_lfsr_rdy : in_data_rdy;
 
     always_comb begin
@@ -170,9 +170,9 @@ module tt_um_gray_sobel (
   
       if (sa_en_i_sync) begin   // SA mode
           if (LFSR_enable_i_sync) begin
-              output_data = (lfsr_done & ~lfsr_en_i_sync) ? sa_signature : '0;
+              output_data = (lfsr_done & ~lfsr_en_i_sync) ? sa_signature : 24'd0;
           end else begin
-              output_data = frame_done_i_sync ? sa_signature : '0;
+              output_data = frame_done_i_sync ? sa_signature :  24'd0;
           end
       end else begin
           if (LFSR_enable_i_sync) begin
