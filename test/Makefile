@@ -1,7 +1,7 @@
 # Makefile
 
 # defaults
-SIM ?= vcs
+SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 COCOTB_HDL_TIMEUNIT = "1ns"
 COCOTB_HDL_TIMEPRECISION = "10ps"
@@ -42,7 +42,11 @@ MODULE = tt_um_gray_sobel_TB
 
 # include cocotb's make rules to take care of the simulator setup
 # include cocotb's make rules to take care of the simulator setup
+ifeq ($(SIM),vcs)
 include ../postapr/Makefile.sim
+else
+include $(shell cocotb-config --makefiles)/Makefile.sim
+endif
 
 VERDI       := verdi
 VERDI_OPTS  := -ssf
